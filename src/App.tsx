@@ -1,25 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
+import React from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
+import Form12bbGenerator from "./Pages/Form12bbGenerator";
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-      <Route path="/" element={<App />}>
-        <Route index element={<Home />} />
-        <Route path="teams" element={<Teams />}>
-          <Route path=":teamId" element={<Team />} />
-          <Route path="new" element={<NewTeamForm />} />
-          <Route index element={<LeagueStandings />} />
-        </Route>
-      </Route>
-    </Routes>
+          <Route path="form-12bb" element={<Form12bbGenerator />} />
+          {/* <Route path="/" element={<App />} /> */}
+        </Routes>
       </BrowserRouter>
     </div>
   );
