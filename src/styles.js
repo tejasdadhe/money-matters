@@ -1,14 +1,14 @@
 import { StyleSheet } from "@react-pdf/renderer";
 export const styles = StyleSheet.create({
   userData: {
-    fontFamily: "TimesBold",
+    //fontFamily: "TimesBold",
     textDecoration: "underline",
   },
 
   page: {
     flexDirection: "row",
     backgroundColor: "white",
-    fontFamily: "Times",
+    //fontFamily: "Times",
     padding: "80px",
   },
   section: {
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     margin: 0,
     fontWeight: 500,
-    fontFamily: "TimesBold",
+    //fontFamily: "TimesBold",
     marginBottom: "5px",
   },
   subHeading: {
@@ -34,20 +34,20 @@ export const styles = StyleSheet.create({
     fontSize: "10px",
     width: "100%",
     textAlign: "center",
-    fontFamily: "TimesItalic",
+    //fontFamily: "TimesItalic",
   },
   titleBold: {
     width: "100%",
     textAlign: "center",
     fontSize: "10px",
-    fontFamily: "TimesBold",
+    //fontFamily: "TimesBold",
     marginTop: "8px",
     paddingLeft: "5px",
   },
 
   titleBullet: {
     fontSize: "10px",
-    fontFamily: "TimesBold",
+    //fontFamily: "TimesBold",
     marginRight: "50px",
   },
 
@@ -56,7 +56,7 @@ export const styles = StyleSheet.create({
   },
   useDetailItem: {
     fontSize: "10px",
-    fontFamily: "Times",
+    //fontFamily: "Times",
   },
   tableRow: {
     borderTop: "1px solid black",
@@ -109,15 +109,15 @@ export const styles = StyleSheet.create({
   },
 
   italics: {
-    fontFamily: "TimesItalic",
+    //fontFamily: "TimesItalic",
   },
 
   bold: {
-    fontFamily: "TimesBold",
+    //fontFamily: "TimesBold",
   },
 
   italicsBold: {
-    fontFamily: "TimesBoldItalic",
+    //fontFamily: "TimesBoldItalic",
   },
 
   mt1: {

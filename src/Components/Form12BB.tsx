@@ -3,18 +3,16 @@ import { romanize } from "../Utils/Formatter";
 import { Font, Page, View, Text, Document, PDFViewer } from "@react-pdf/renderer";
 import { styles } from "../styles";
 
-// import times from "../Assets/Fonts/times.ttf";
-// import timesBold from "../Assets/Fonts/times-bold.ttf";
-// import timesItalic from "../Assets/Fonts/times-italic.ttf";
-// import timesBoldItalic from "../Assets/Fonts/times-bold-italic.ttf";
+import times from "../Assets/Fonts/times.ttf";
+import timesBold from "../Assets/Fonts/times-bold.ttf";
+import timesItalic from "../Assets/Fonts/times-italic.ttf";
+import timesBoldItalic from "../Assets/Fonts/times-bold-italic.ttf";
 
 
-// Create styles
-
-// Font.register({ family: "Times", src: times });
-// Font.register({ family: "TimesBold", src: timesBold });
-// Font.register({ family: "TimesItalic", src: timesItalic });
-// Font.register({ family: "TimesBoldItalic", src: timesBoldItalic });
+Font.register({ family: "Times", src: times });
+Font.register({ family: "TimesBold", src: timesBold });
+Font.register({ family: "TimesItalic", src: timesItalic });
+Font.register({ family: "TimesBoldItalic", src: timesBoldItalic });
 
 const colSpan1 = 1;
 const colSpan2 = 6;
@@ -54,13 +52,13 @@ const Column = ({
         children
       ) : (
         <Text
-          // style={{
-          //   fontFamily,
-          //   display: "flex",
-          //   flex: 1,
-          //   alignItems: center ? "center" : "left",
-          //   textAlign: center ? "center" : "left",
-          // }}
+          style={{
+            fontFamily,
+            display: "flex",
+            flex: 1,
+            alignItems: center ? "center" : "flex-start",
+            textAlign: center ? "center" : "left",
+          }}
         >
           {children}
         </Text>

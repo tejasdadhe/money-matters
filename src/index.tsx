@@ -1,5 +1,8 @@
 import React from "react";
 import "./index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./Assets/Styles/form12bb.scss";
+import "./Assets/Styles/main.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import ReactDOM from "react-dom";
