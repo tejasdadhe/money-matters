@@ -9,6 +9,7 @@ const Form12bbGenerator = () => {
       <PDFViewer className="f-1">
         <Form12BB data={data} />
       </PDFViewer>
+      <div className="f-1"></div>
     </div>
   );
 };

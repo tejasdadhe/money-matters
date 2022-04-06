@@ -1,6 +1,6 @@
 import React from "react";
 import { romanize } from "../Utils/Formatter";
-import { Font, Page, View, Text, Document, PDFViewer } from "@react-pdf/renderer";
+import { Font, Page, View, Text, Document } from "@react-pdf/renderer";
 import { styles } from "../styles";
 
 import times from "../Assets/Fonts/times.ttf";
