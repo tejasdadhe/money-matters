@@ -3,26 +3,26 @@ export const data = {
   place: "Nagpur",
   date: new Date(),
   user: {
-    firstName: "Tejas",
-    middleName: " Vilasrao",
-    lastName: "Dadhe",
-    designation: "Software Engineer",
-    identityNumber: "123421",
+    firstName: "",
+    middleName: " ",
+    lastName: "",
+    designation: "",
+    identityNumber: "",
     parent: {
-      firstName: "Vilasrao",
-      middleName: "Haribhau",
-      lastName: "Dadhe",
+      firstName: "",
+      middleName: "",
+      lastName: "",
     },
   },
   investmentData: {
     taxExemptions: {
       // House rent Allowance
       section_80_gg: {
-        amount: 100000,
+        amount: "",
         landLord: {
-          name: "John Doe",
-          address: "D-205, NIT-Complex, Gurudev Nagar, Nandanwan, Nagpur",
-          identityNumber: "BTAPD8008B",
+          name: "",
+          address: "",
+          identityNumber: "",
         },
         evidence: {
           label: "",
@@ -31,7 +31,7 @@ export const data = {
       },
       //Leave and Travel Allowance
       section_10_5: {
-        amount: 10000,
+        amount: "",
         evidence: {
           label: "",
           url: "",
@@ -42,7 +42,7 @@ export const data = {
       //Interest on housing loan
       section_80_ee: {
         isClaimed: true,
-        amount: 200000,
+        amount: "",
         lender: {
           name: "HDFC ltd",
           address:
@@ -61,9 +61,9 @@ export const data = {
       //Interest on eduction loan
       section_80_e: {
         isClaimed: true,
-        amount: 200000,
+        amount: "",
         lender: {
-          name: "HDFC ltd",
+          name: "",
           address: "",
           identityNumber: "",
           financialInstitution: "",
@@ -79,7 +79,7 @@ export const data = {
       //Interest on electric vehicle loan
       section_80_eeb: {
         isClaimed: true,
-        amount: 200000,
+        amount: "",
         lender: {
           name: "",
           address: "",
