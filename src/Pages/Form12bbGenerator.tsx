@@ -53,7 +53,7 @@ const Form12bbGenerator = () => {
         <Form12BB data={formData} />
       </PDFViewer>
       <div className="f-1 gap-1 p-1 d-flex flex-column">
-        <Collapsible className="" title="User Details">
+        <Collapsible title="User Details" className="mt-2" >
           <div className="d-flex flex-column mt-2">
             <label>Name</label>
             <div className="d-flex gap-1">
@@ -74,7 +74,7 @@ const Form12bbGenerator = () => {
             <div className="d-flex flex-column f-1">
               <label>PAN / AADHAR number</label>
               <div className="d-flex gap-1">
-                <input placeholder="Full stack developer" className="f-1" value={userData.identityNumber} name="identityNumber" onChange={handleUserData}/>
+                <input placeholder="ABC1234" className="f-1" value={userData.identityNumber} name="identityNumber" onChange={handleUserData}/>
               </div>
             </div>
             <div className="d-flex flex-column f-1">
@@ -86,7 +86,7 @@ const Form12bbGenerator = () => {
           </div>
           
         </Collapsible>
-        <Collapsible title="User Details">
+        <Collapsible className="mt-2" title="Financial Details">
           User details goes in here
         </Collapsible>
       </div>

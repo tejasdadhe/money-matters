@@ -21,7 +21,7 @@ const Collapsible = ({ title, children, className }: { title: string, children: 
             {isCollapsed ? <BiPlusCircle /> : <BiMinusCircle />}
           </button>
         </div>
-        <div className={`collapsible-content ${isCollapsed ? "collapsed" : "mt-1"}`}>{children}</div>
+        <div className={`collapsible-content ${isCollapsed ? "collapsed" : "mt-1 pb-1"}`}>{children}</div>
       </div>
     </div>
   );
