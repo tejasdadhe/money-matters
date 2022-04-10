@@ -1,0 +1,33 @@
+.collapsible-item
+{
+  border: 1px solid grey;
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+
+    & > .collapsible-title {
+    display: flex;
+
+    h3 {
+      margin-bottom: unset;
+      font-size: 1.5rem;
+    }
+    button {
+      background: transparent;
+      border:none;
+      display:flex;
+      align-items: center;
+    }
+
+
+  }
+}
+
+.collapsible-content {
+  transition: all 1s;
+
+  &.collapsed {
+    min-height: 0px;
+    height: 0px;
+    overflow: hidden;
+  }
+}
