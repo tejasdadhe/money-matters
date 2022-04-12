@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Collapsible from "../Components/Collapsible";
 import Form12BB from "../Components/Form12BB";
 import { data } from "../Constants/data";
-import { UserData } from "../Types/User.types";
+import { HRAdata, UserData } from "../Types/Form12bb.types";
 
 const Form12bbGenerator = () => {
 
@@ -14,27 +14,59 @@ const Form12bbGenerator = () => {
     designation: ""
   };
 
+  const initialHRAdata: HRAdata = {
+    amount: 0,
+    landLordName: "",
+    landLordAddress: "",
+    landLordIdentityNumber: ""
+  };
+
+
+
   const [formData, setData] = useState(data);
+  const [fiscalYear, setFiscalYear] = useState("2022-2023");
   const [userData, setUserData] = useState<UserData>(initialUserData);
+  const [hraData, setHraData] = useState<HRAdata>(initialHRAdata);
 
 
 
   useEffect(() => {
-    setData((formData) => { return {...formData,user: {
-      firstName: userData.fName,
-      middleName: userData.mName,
-      lastName: userData.lName,
-      designation: userData.designation,
-      identityNumber: userData.identityNumber,
-      parent: {
-        firstName: userData.parentFname,
-        middleName: userData.parentMname,
-        lastName: userData.parentLname,
-      },
-    }
-    };
+    setData((formData) => {
+      return {
+        ...formData,
+        user: {
+          firstName: userData.fName,
+          middleName: userData.mName,
+          lastName: userData.lName,
+          designation: userData.designation,
+          identityNumber: userData.identityNumber,
+          parent: {
+            firstName: userData.parentFname,
+            middleName: userData.parentMname,
+            lastName: userData.parentLname,
+          },
+        },
+        investmentData: {
+          ...formData.investmentData,
+          taxExemptions: {
+            ...formData.investmentData.taxExemptions,
+            section_80_gg: {
+              amount: hraData.amount.toString(),
+              landLord: {
+                name: hraData.landLordName,
+                address: hraData.landLordAddress,
+                identityNumber: hraData.landLordIdentityNumber,
+              },
+              evidence: {
+                label: "",
+                url: "",
+              },
+            }
+          }
+        }
+      };
     });
-  }, [userData]);
+  }, [userData, hraData]);
   
   const handleUserData = (e: React.FormEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
@@ -44,6 +76,17 @@ const Form12bbGenerator = () => {
       const newUserData: any = { ...currentUserData };
       newUserData[name] = value;
       return newUserData;
+    });
+  };
+
+  const handleHRAdata = (e: React.FormEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+    console.log("Current Target", name, value);
+    setHraData((currentHraData) => {
+      const newHraData: any = { ...currentHraData };
+      newHraData[name] = value;
+      return newHraData;
     });
   };
 
@@ -86,8 +129,23 @@ const Form12bbGenerator = () => {
           </div>
           
         </Collapsible>
-        <Collapsible className="mt-2" title="Financial Details">
-          User details goes in here
+        <Collapsible className="mt-2" title="Home Rent Allowance (HRA)">
+          <div className="d-flex flex-column mt-2">
+            <label>Amount paid to land lord in the financial year { fiscalYear }</label>
+            <input placeholder="1,00,000" className="f-1" value={hraData.amount} name="amount" onChange={handleHRAdata}/>
+          </div>
+          <div className="d-flex flex-column mt-2">
+            <label>Name of the land lord</label>
+            <input placeholder="John Doe" className="f-1" value={hraData.landLordName} name="landLordName" onChange={handleHRAdata}/>
+          </div>
+          <div className="d-flex flex-column mt-2">
+            <label>Address of the land lord</label>
+            <input placeholder="Address" className="f-1" value={hraData.landLordAddress} name="landLordAddress" onChange={handleHRAdata}/>
+          </div>
+          <div className="d-flex flex-column mt-2">
+            <label>PAN or AADHAAR number of the land lord</label>
+            <input placeholder="ABC1234" className="f-1" value={hraData.landLordIdentityNumber} name="landLordIdentityNumber" onChange={handleHRAdata}/>
+          </div>
         </Collapsible>
       </div>
     </div>
