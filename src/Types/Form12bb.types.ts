@@ -15,3 +15,7 @@ export interface HRAdata {
   landLordAddress: string
   landLordIdentityNumber: string,
 }
+
+export interface LTAdata {
+  amount: number,
+}

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Collapsible from "../Components/Collapsible";
 import Form12BB from "../Components/Form12BB";
 import { data } from "../Constants/data";
-import { HRAdata, UserData } from "../Types/Form12bb.types";
+import { HRAdata, LTAdata, UserData } from "../Types/Form12bb.types";
 
 const Form12bbGenerator = () => {
 
@@ -21,12 +21,17 @@ const Form12bbGenerator = () => {
     landLordIdentityNumber: ""
   };
 
+  const initialLTAData: LTAdata = {
+    amount: 0,
+  };  
+
 
 
   const [formData, setData] = useState(data);
   const [fiscalYear, setFiscalYear] = useState("2022-2023");
   const [userData, setUserData] = useState<UserData>(initialUserData);
   const [hraData, setHraData] = useState<HRAdata>(initialHRAdata);
+  const [ltaData, setLtaData] = useState(initialLTAData);
 
 
 
@@ -61,12 +66,19 @@ const Form12bbGenerator = () => {
                 label: "",
                 url: "",
               },
+            },
+            section_10_5: {
+              amount: ltaData.amount.toString(),
+              evidence: {
+                label: "",
+                url: "",
+              }
             }
           }
         }
       };
     });
-  }, [userData, hraData]);
+  }, [userData, hraData, ltaData]);
   
   const handleUserData = (e: React.FormEvent<HTMLInputElement>) => {
     const name = e.currentTarget.name;
@@ -87,6 +99,17 @@ const Form12bbGenerator = () => {
       const newHraData: any = { ...currentHraData };
       newHraData[name] = value;
       return newHraData;
+    });
+  };
+
+  const handleLtaData = (e: React.FormEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.name;
+    const value = e.currentTarget.value;
+    console.log("Current Target", name, value);
+    setLtaData((currentLtaData) => {
+      const newLtaData: any = { ...currentLtaData };
+      newLtaData[name] = value;
+      return newLtaData;
     });
   };
 
@@ -145,6 +168,12 @@ const Form12bbGenerator = () => {
           <div className="d-flex flex-column mt-2">
             <label>PAN or AADHAAR number of the land lord</label>
             <input placeholder="ABC1234" className="f-1" value={hraData.landLordIdentityNumber} name="landLordIdentityNumber" onChange={handleHRAdata}/>
+          </div>
+        </Collapsible>
+        <Collapsible className="mt-2" title="Leave & Travel Allowance (LTA)">
+          <div className="d-flex flex-column mt-2">
+            <label>Amount</label>
+            <input placeholder="40000" className="f-1" value={ltaData.amount} name="amount" onChange={handleLtaData}/>
           </div>
         </Collapsible>
       </div>
