@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Collapsible from "../Components/Collapsible";
 import Form12BB from "../Components/Form12BB";
 import { data } from "../Constants/data";
-import { HRAdata, LTAdata, UserData } from "../Types/Form12bb.types";
+import { HRAdata, LoanData, LTAdata, UserData } from "../Types/Form12bb.types";
 
 const Form12bbGenerator = () => {
 
@@ -25,13 +25,47 @@ const Form12bbGenerator = () => {
     amount: 0,
   };  
 
+  const initialHousingLoan: LoanData = {
+    section: "24 B",
+    isAvailed: true,
+    principal: 0,
+    interest: 0,
+    lenderName: "",
+    lenderAddress: "",
+    lenderIdentityNumber: ""
+  };
+
+  const initialEducationLoan: LoanData = {
+    section: "80 E",
+    isAvailed: false,
+    principal: 0,
+    interest: 0,
+    lenderName: "",
+    lenderAddress: "",
+    lenderIdentityNumber: ""
+  }; 
+
+
+  const initialElectricVehicleLoan: LoanData = {
+    section: "80 EEB",
+    isAvailed: false,
+    principal: 0,
+    interest: 0,
+    lenderName: "",
+    lenderAddress: "",
+    lenderIdentityNumber: ""
+  }; 
+
 
 
   const [formData, setData] = useState(data);
-  const [fiscalYear, setFiscalYear] = useState("2022-2023");
+  const [fiscalYear] = useState("2022-2023");
   const [userData, setUserData] = useState<UserData>(initialUserData);
   const [hraData, setHraData] = useState<HRAdata>(initialHRAdata);
-  const [ltaData, setLtaData] = useState(initialLTAData);
+  const [ltaData, setLtaData] = useState<LTAdata>(initialLTAData);
+  const [housingLoanData, setHousingLoanData] = useState<LoanData>(initialHousingLoan);
+  const [educatonLoanData, setEducationLoanData] = useState<LoanData>(initialEducationLoan);
+  const [electricVehicleLoan, setElectricVehicleLoanData] = useState<LoanData>(initialElectricVehicleLoan);
 
 
 
@@ -74,6 +108,9 @@ const Form12bbGenerator = () => {
                 url: "",
               }
             }
+          },
+          taxDeductions: {
+            loans :[],
           }
         }
       };
@@ -85,7 +122,7 @@ const Form12bbGenerator = () => {
     const value = e.currentTarget.value;
     console.log("Current Target", name, value);
     setUserData((currentUserData) => {
-      const newUserData: any = { ...currentUserData };
+      const newUserData: UserData = { ...currentUserData };
       newUserData[name] = value;
       return newUserData;
     });
@@ -96,7 +133,7 @@ const Form12bbGenerator = () => {
     const value = e.currentTarget.value;
     console.log("Current Target", name, value);
     setHraData((currentHraData) => {
-      const newHraData: any = { ...currentHraData };
+      const newHraData: HRAdata = { ...currentHraData };
       newHraData[name] = value;
       return newHraData;
     });
@@ -107,9 +144,40 @@ const Form12bbGenerator = () => {
     const value = e.currentTarget.value;
     console.log("Current Target", name, value);
     setLtaData((currentLtaData) => {
-      const newLtaData: any = { ...currentLtaData };
+      const newLtaData: LTAdata = { ...currentLtaData };
       newLtaData[name] = value;
       return newLtaData;
+    });
+  };
+
+  const handleHousingLoanData = (e: React.FormEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.name;
+    const value = (name === "isAvailed") ? (e.currentTarget.checked) : e.currentTarget.value;
+    setHousingLoanData((currentHousingLoanData) => {
+      const newHousingLoanData: LoanData = { ...currentHousingLoanData };
+      newHousingLoanData[name] = value;
+      return newHousingLoanData;
+    });
+  };
+
+  const handleEducationLoanData = (e: React.FormEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.name;
+    const value = (name === "isAvailed") ? (e.currentTarget.checked) : e.currentTarget.value;
+    setEducationLoanData((currentEducationLoanData) => {
+      const newEducationLoanData: LoanData = { ...currentEducationLoanData };
+      newEducationLoanData[name] = value;
+      return newEducationLoanData;
+    });
+  };
+
+
+  const handleElectricVehicleLoanData = (e: React.FormEvent<HTMLInputElement>) => {
+    const name = e.currentTarget.name;
+    const value = (name === "isAvailed") ? (e.currentTarget.checked) : e.currentTarget.value;
+    setElectricVehicleLoanData((currentElectricVehicleLoanData) => {
+      const newElectricVehicleLoanData: LoanData = { ...currentElectricVehicleLoanData };
+      newElectricVehicleLoanData[name] = value;
+      return newElectricVehicleLoanData;
     });
   };
 
@@ -118,7 +186,7 @@ const Form12bbGenerator = () => {
       <PDFViewer className="f-1">
         <Form12BB data={formData} />
       </PDFViewer>
-      <div className="f-1 gap-1 p-1 d-flex flex-column">
+      <div className="f-1 gap-1 p-1 d-flex flex-column overflow-auto">
         <Collapsible title="User Details" className="mt-2" >
           <div className="d-flex flex-column mt-2">
             <label>Name</label>
@@ -175,6 +243,87 @@ const Form12bbGenerator = () => {
             <label>Amount</label>
             <input placeholder="40000" className="f-1" value={ltaData.amount} name="amount" onChange={handleLtaData}/>
           </div>
+        </Collapsible>
+        <Collapsible className="mt-2" title="Loans">
+          <h5 className="mt-2 mb-0">Housing Loan</h5>
+          <div className="d-flex gap-2">
+            <div className="d-flex flex-column mt-2 f-1">
+              <label>Principal Amount</label>
+              <input placeholder="150000" className="f-1" value={housingLoanData.principal} name="principal" onChange={handleHousingLoanData}/>
+            </div>
+            <div className="d-flex flex-column mt-2 f-1">
+              <label>Interest Amount</label>
+              <input placeholder="200000" className="f-1" value={housingLoanData.interest} name="interest" onChange={handleHousingLoanData}/>
+            </div>
+          </div>  
+          <div className="d-flex flex-column mt-2">
+            <label>Name of the lender.</label>
+            <input placeholder="John Doe" className="f-1" value={housingLoanData.lenderName} name="lenderName" onChange={handleHousingLoanData}/>
+          </div>  
+          <div className="d-flex flex-column mt-2">
+            <label>Address of the lender.</label>
+            <input className="f-1" value={housingLoanData.lenderAddress} name="lenderAddress" onChange={handleHousingLoanData}/>
+          </div>  
+          <div className="d-flex flex-column mt-2">
+            <label>PAN / AADHAAR number of the lender.</label>
+            <input placeholder="ABC123" className="f-1" value={housingLoanData.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleHousingLoanData}/>
+          </div>
+          <hr className="mb-3"/>
+          <div className="d-flex flex-row justify-content-between align-items-center mt-3">
+            <h5 className="mb-0">Education Loan</h5>
+            <input type="checkbox" className="form-check-input mr-3" name="isAvailed" onChange={handleEducationLoanData}/>
+          </div>
+          {
+            educatonLoanData.isAvailed ? (<>
+              <div className="d-flex gap-2">
+                <div className="d-flex flex-column mt-2 f-1">
+                  <label>Principal Amount</label>
+                  <input placeholder="150000" className="f-1" value={educatonLoanData.principal} name="principal" onChange={handleEducationLoanData} />
+                </div>
+                <div className="d-flex flex-column mt-2 f-1">
+                  <label>Interest Amount</label>
+                  <input placeholder="200000" className="f-1" value={educatonLoanData.interest} name="interest" onChange={handleEducationLoanData} />
+                </div>
+              </div><div className="d-flex flex-column mt-2">
+                <label>Name of the lender.</label>
+                <input placeholder="John Doe" className="f-1" value={educatonLoanData.lenderName} name="lenderName" onChange={handleEducationLoanData} />
+              </div><div className="d-flex flex-column mt-2">
+                <label>Address of the lender.</label>
+                <input className="f-1" value={educatonLoanData.lenderAddress} name="lenderAddress" onChange={handleEducationLoanData} />
+              </div><div className="d-flex flex-column mt-2">
+                <label>PAN / AADHAAR number of the lender.</label>
+                <input placeholder="ABC123" className="f-1" value={educatonLoanData.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleEducationLoanData} />
+              </div>
+            </>) : <></>}
+          
+          
+          <hr className="mb-3" />
+          <div className="d-flex flex-row justify-content-between align-items-center mt-3">
+            <h5 className="mb-0">Electric Vehicle Loan</h5>
+            <input type="checkbox" className="form-check-input mr-3" name="isAvailed" onChange={handleElectricVehicleLoanData}/>
+          </div>
+          {
+            electricVehicleLoan.isAvailed ? (
+              <><div className="d-flex gap-2">
+                <div className="d-flex flex-column mt-2 f-1">
+                  <label>Principal Amount</label>
+                  <input placeholder="150000" className="f-1" value={electricVehicleLoan.principal} name="principal" onChange={handleElectricVehicleLoanData} />
+                </div>
+                <div className="d-flex flex-column mt-2 f-1">
+                  <label>Interest Amount</label>
+                  <input placeholder="200000" className="f-1" value={electricVehicleLoan.interest} name="interest" onChange={handleElectricVehicleLoanData} />
+                </div>
+              </div><div className="d-flex flex-column mt-2">
+                <label>Name of the lender.</label>
+                <input placeholder="John Doe" className="f-1" value={electricVehicleLoan.lenderName} name="lenderName" onChange={handleElectricVehicleLoanData} />
+              </div><div className="d-flex flex-column mt-2">
+                <label>Address of the lender.</label>
+                <input className="f-1" value={electricVehicleLoan.lenderAddress} name="lenderAddress" onChange={handleElectricVehicleLoanData} />
+              </div><div className="d-flex flex-column mt-2">
+                <label>PAN / AADHAAR number of the lender.</label>
+                <input placeholder="ABC123" className="f-1" value={electricVehicleLoan.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleElectricVehicleLoanData} />
+              </div></>) : (<></>)
+          }
         </Collapsible>
       </div>
     </div>

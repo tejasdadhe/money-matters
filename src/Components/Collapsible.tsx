@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BiMinusCircle, BiPlusCircle } from "react-icons/bi";
 
 
-const Collapsible = ({ title, children, className }: { title: string, children: any, className?:string }) => {
+const Collapsible = ({ title, children, className }: { title: string, children: React.ReactNode, className?:string }) => {
   
   const [isCollapsed, setCollapsed] = useState(true);
 

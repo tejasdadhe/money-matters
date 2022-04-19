@@ -1,12 +1,14 @@
 import React from "react";
 import { romanize } from "../Utils/Formatter";
 import { Font, Page, View, Text, Document } from "@react-pdf/renderer";
+import { Style } from "@react-pdf/types";
 import { styles } from "../styles";
 
 import times from "../Assets/Fonts/times.ttf";
 import timesBold from "../Assets/Fonts/times-bold.ttf";
 import timesItalic from "../Assets/Fonts/times-italic.ttf";
 import timesBoldItalic from "../Assets/Fonts/times-bold-italic.ttf";
+import { LoanData } from "../Types/Form12bb.types";
 
 
 Font.register({ family: "Times", src: times });
@@ -27,7 +29,15 @@ const Column = ({
   bold,
   italic,
   withoutText,
-}:any) => {
+}: {
+    children?: React.ReactNode,
+    style?: Style | Style[],
+    colSpan?: number,
+    center?: boolean,
+    bold?: boolean,
+    italic?: boolean,
+    withoutText? : boolean,
+}) => {
   let fontFamily = "Times";
   if (bold && italic) {
     fontFamily = "TimesBoldItalic";
@@ -45,7 +55,7 @@ const Column = ({
         display: "flex",
         flexDirection: "row",
         flex: colSpan ? colSpan : 1,
-        alignItems: center ? "center" : "left",
+        alignItems: center ? "center" : "flex-start",
       }}
     >
       {withoutText ? (
@@ -67,19 +77,16 @@ const Column = ({
   );
 };
 
-const Bold = ({ children } : any) => {
+const Bold = ({ children } : { children:React.ReactNode }) => {
   return <Text style={{ fontFamily: "TimesBold" }}>{children}</Text>;
 };
 
-const Italic = ({ children } : any) => {
+const Italic = ({ children } : { children:React.ReactNode }) => {
   return <Text style={{ fontFamily: "TimesItalic" }}>{children}</Text>;
 };
 
-const BoldAndItalic = ({ children } :any) => {
-  return <Text style={{ fontFamily: "TimesBoldItalic" }}>{children}</Text>;
-};
-
-const Row = ({ children, style, lastRow, transparent } : any) => {
+const Row = ({ children, style, lastRow, transparent } :
+  { children: React.ReactNode, style?: Style | Style[], lastRow?: boolean, transparent?: boolean }) => {
   return (
     <View
       style={{
@@ -96,7 +103,12 @@ const Row = ({ children, style, lastRow, transparent } : any) => {
   );
 };
 
-const StyledText = ({ children, style, bold, italic } : any) => {
+const StyledText = ({ children, style, bold, italic } : {
+    children?: React.ReactNode,
+    style?: Style | Style[],
+    bold?: boolean,
+    italic?: boolean,
+}) => {
   let fontFamily = "Times";
   if (bold && italic) {
     fontFamily = "TimesBoldItalic";
@@ -112,7 +124,12 @@ const StyledText = ({ children, style, bold, italic } : any) => {
   );
 };
 
-const ListItem = ({ children, level, type, index } : any) => {
+const ListItem = ({ children, level, type, index } : {
+    children?: React.ReactNode,
+    level?: number,
+    type?: "1" | "a" | "A" | "i" | "I",
+    index: number,
+}) => {
   const indexType = type ? type.toString() : "1";
   let displayIndex = "1";
   if (indexType === "a") {
@@ -327,96 +344,186 @@ const Form12BB = ({ data }:any) => {
               <Column colSpan={colSpan3}></Column>
               <Column colSpan={colSpan4}></Column>
             </Row>
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={1} type="i">
+            {data.loans.length > 0 ? data.loans.map((item : LoanData) => <>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={1} type="i">
                   Interest payable/paid to the lender
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}>
-                Rs. {data.investmentData.taxDeductions.section_80_ee.amount}
-              </Column>
-              <Column colSpan={colSpan4}></Column>
-            </Row>
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={2} type="i">
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}>
+                Rs. {item.interest}
+                </Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={2} type="i">
                   Name of the lender
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}>
-                {data.investmentData.taxDeductions.section_80_ee.lender.name}
-              </Column>
-            </Row>
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={3} type="i">
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                  {item.lenderName}
+                </Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={3} type="i">
                   Address of the lender
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}>
-                {data.investmentData.taxDeductions.section_80_ee.lender.address}
-              </Column>
-            </Row>
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={4} type="i">
-                  <StyledText style={{ ...styles.ml1 }}>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                  {item.lenderAddress}
+                </Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={4} type="i">
+                    <StyledText style={{ ...styles.ml1 }}>
                     [
-                    <Text style={{ ...styles.italics }}>
+                      <Text style={{ ...styles.italics }}>
                       Permanent Account Number or Aadhaar Number
-                    </Text>
+                      </Text>
                     ] of the lender
-                  </StyledText>
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}>
-                {
-                  data.investmentData.taxDeductions.section_80_ee.lender
-                    .identityNumber
-                }
-              </Column>
-            </Row>
+                    </StyledText>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                  {
+                    item.lenderIdentityNumber
+                  }
+                </Column>
+              </Row>
 
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={1} type="a" level={2}>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={1} type="a" level={2}>
                   Financial Institutions (if available)
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}></Column>
-            </Row>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
 
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={2} type="a" level={2}>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={2} type="a" level={2}>
                   Employer (if available)
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}></Column>
-            </Row>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
 
-            <Row transparent>
-              <Column colSpan={colSpan1}></Column>
-              <Column colSpan={colSpan2} withoutText>
-                <ListItem index={3} type="a" level={2}>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={3} type="a" level={2}>
                   Others
-                </ListItem>
-              </Column>
-              <Column colSpan={colSpan3}></Column>
-              <Column colSpan={colSpan4}></Column>
-            </Row>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+            </>) : (<>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={1} type="i">
+                  Interest payable/paid to the lender
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}>
+                Rs. 0
+                </Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={2} type="i">
+                  Name of the lender
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                  
+                </Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={3} type="i">
+                  Address of the lender
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                 
+                </Column>
+              </Row>
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={4} type="i">
+                    <StyledText style={{ ...styles.ml1 }}>
+                    [
+                      <Text style={{ ...styles.italics }}>
+                      Permanent Account Number or Aadhaar Number
+                      </Text>
+                    ] of the lender
+                    </StyledText>
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}>
+                  
+                </Column>
+              </Row>
+
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={1} type="a" level={2}>
+                  Financial Institutions (if available)
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={2} type="a" level={2}>
+                  Employer (if available)
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+
+              <Row transparent>
+                <Column colSpan={colSpan1}></Column>
+                <Column colSpan={colSpan2} withoutText>
+                  <ListItem index={3} type="a" level={2}>
+                  Others
+                  </ListItem>
+                </Column>
+                <Column colSpan={colSpan3}></Column>
+                <Column colSpan={colSpan4}></Column>
+              </Row>
+            </>)}
+            
 
             <Row>
               <Column colSpan={colSpan1} center>

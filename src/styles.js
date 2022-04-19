@@ -2,7 +2,8 @@ import { StyleSheet } from "@react-pdf/renderer";
 export const styles = StyleSheet.create({
   userData: {
     fontFamily: "TimesBold",
-    textDecoration: "underline",
+    textDecoration: "underline dotted",
+    textTransform: "capitalize",
   },
 
   page: {
