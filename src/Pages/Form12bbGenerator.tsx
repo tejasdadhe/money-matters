@@ -3,62 +3,20 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import Collapsible from "../Components/Collapsible";
 import Form12BB from "../Components/Form12BB";
-import { data } from "../Constants/data";
-import { HRAdata, LoanData, LTAdata, UserData } from "../Types/Form12bb.types";
+import {
+  initialUserData,
+  initialHRAdata,
+  initialLTAData,
+  initialHousingLoan,
+  initialEducationLoan,
+  initialElectricVehicleLoan,
+  initialForm12BBData
+} from "../Constants/InitialValues";
+import { HRAdata, LoanData, LTAdata, UserData, Form12BBdata } from "../Types/Form12bb.types";
 
 const Form12bbGenerator = () => {
 
-  const initialUserData: UserData = {
-    fName: "", mName: "", lName: "", parentFname: "", parentMname: "", parentLname: "",
-    identityNumber: "",
-    designation: ""
-  };
-
-  const initialHRAdata: HRAdata = {
-    amount: 0,
-    landLordName: "",
-    landLordAddress: "",
-    landLordIdentityNumber: ""
-  };
-
-  const initialLTAData: LTAdata = {
-    amount: 0,
-  };  
-
-  const initialHousingLoan: LoanData = {
-    section: "24 B",
-    isAvailed: true,
-    principal: 0,
-    interest: 0,
-    lenderName: "",
-    lenderAddress: "",
-    lenderIdentityNumber: ""
-  };
-
-  const initialEducationLoan: LoanData = {
-    section: "80 E",
-    isAvailed: false,
-    principal: 0,
-    interest: 0,
-    lenderName: "",
-    lenderAddress: "",
-    lenderIdentityNumber: ""
-  }; 
-
-
-  const initialElectricVehicleLoan: LoanData = {
-    section: "80 EEB",
-    isAvailed: false,
-    principal: 0,
-    interest: 0,
-    lenderName: "",
-    lenderAddress: "",
-    lenderIdentityNumber: ""
-  }; 
-
-
-
-  const [formData, setData] = useState(data);
+  const [formData, setData] = useState<Form12BBdata>(initialForm12BBData);
   const [fiscalYear] = useState("2022-2023");
   const [userData, setUserData] = useState<UserData>(initialUserData);
   const [hraData, setHraData] = useState<HRAdata>(initialHRAdata);
@@ -70,58 +28,62 @@ const Form12bbGenerator = () => {
 
 
   useEffect(() => {
-    setData((formData) => {
-      return {
-        ...formData,
-        user: {
-          firstName: userData.fName,
-          middleName: userData.mName,
-          lastName: userData.lName,
-          designation: userData.designation,
-          identityNumber: userData.identityNumber,
-          parent: {
-            firstName: userData.parentFname,
-            middleName: userData.parentMname,
-            lastName: userData.parentLname,
-          },
-        },
-        investmentData: {
-          ...formData.investmentData,
+    let loans = [housingLoanData];
+    if (educatonLoanData.isAvailed) loans.push(educatonLoanData);
+    if (electricVehicleLoan.isAvailed) loans.push(electricVehicleLoan);
+    if (loans.length > 1) loans = loans.filter((item: LoanData) => item.isAvailed);
+    
+    setData(
+      {
+        financialYear: "2021-22",
+        place: "Napur",
+        date: new Date(),
+        user: userData,
+        declarations: {
           taxExemptions: {
-            ...formData.investmentData.taxExemptions,
-            section_80_gg: {
-              amount: hraData.amount.toString(),
-              landLord: {
-                name: hraData.landLordName,
-                address: hraData.landLordAddress,
-                identityNumber: hraData.landLordIdentityNumber,
-              },
-              evidence: {
-                label: "",
-                url: "",
-              },
-            },
-            section_10_5: {
-              amount: ltaData.amount.toString(),
-              evidence: {
-                label: "",
-                url: "",
-              }
-            }
+            hra: hraData,
+            lta: ltaData
           },
           taxDeductions: {
-            loans :[],
+            loans,
           }
         }
-      };
-    });
-  }, [userData, hraData, ltaData]);
+      }
+    );
+  }, [userData, hraData, ltaData, housingLoanData, educatonLoanData, electricVehicleLoan]);
+  
+
+  useEffect(() => {
+    console.log("Form Data", formData);
+  }, [formData]);
   
   const handleUserData = (e: React.FormEvent<HTMLInputElement>) => {
-    const name = e.currentTarget.name;
-    const value = e.currentTarget.value;
-    console.log("Current Target", name, value);
+    const target = e.currentTarget;
     setUserData((currentUserData) => {
+      let name = target.name;
+      let value : string | UserData = target.value;
+      if (name === "parentFname") {
+        name = "parent";
+        value = {
+          firstName: value,
+          middleName: currentUserData.parent ? currentUserData.parent.middleName : "",
+          lastName: currentUserData.parent ? currentUserData.parent.lastName : "",
+        };
+      } else if (name === "parentMname") {
+        name = "parent";
+        value = {
+          firstName: currentUserData.parent ? currentUserData.parent.firstName : "",
+          middleName: value,
+          lastName: currentUserData.parent ? currentUserData.parent.lastName : "",
+        };
+      } else if (name === "parentLname") {
+        name = "parent";
+        value = {
+          firstName: currentUserData.parent ? currentUserData.parent.firstName : "",
+          middleName: currentUserData.parent ? currentUserData.parent.middleName : "",
+          lastName: value,
+        };
+      }
       const newUserData: UserData = { ...currentUserData };
       newUserData[name] = value;
       return newUserData;
@@ -191,17 +153,17 @@ const Form12bbGenerator = () => {
           <div className="d-flex flex-column mt-2">
             <label>Name</label>
             <div className="d-flex gap-1">
-              <input placeholder="First Name" className="f-1" value={userData.fName} name="fName" onChange={handleUserData}/>
-              <input placeholder="Middle Name" className="f-1" value={userData.mName} name="mName" onChange={handleUserData}/>
-              <input placeholder="Last Name" className="f-1" value={userData.lName} name="lName" onChange={handleUserData}/>
+              <input placeholder="First Name" className="f-1" value={userData.firstName} name="firstName" onChange={handleUserData}/>
+              <input placeholder="Middle Name" className="f-1" value={userData.middleName} name="middleName" onChange={handleUserData}/>
+              <input placeholder="Last Name" className="f-1" value={userData.lastName} name="lastName" onChange={handleUserData}/>
             </div>
           </div>
           <div className="d-flex flex-column mt-2">
             <label>Parent&apos;s Name</label>
             <div className="d-flex gap-1">
-              <input placeholder="First Name" className="f-1" value={userData.parentFname} name="parentFname" onChange={handleUserData}/>
-              <input placeholder="Middle Name" className="f-1" value={userData.parentMname} name="parentMname" onChange={handleUserData}/>
-              <input placeholder="Last Name" className="f-1" value={userData.parentLname} name="parentLname" onChange={handleUserData}/>
+              <input placeholder="First Name" className="f-1" value={userData.parent?.firstName} name="parentFname" onChange={handleUserData}/>
+              <input placeholder="Middle Name" className="f-1" value={userData.parent?.middleName} name="parentMname" onChange={handleUserData}/>
+              <input placeholder="Last Name" className="f-1" value={userData.parent?.lastName} name="parentLname" onChange={handleUserData}/>
             </div>
           </div>
           <div className="d-flex gap-2 mt-2">
@@ -245,29 +207,30 @@ const Form12bbGenerator = () => {
           </div>
         </Collapsible>
         <Collapsible className="mt-2" title="Loans">
-          <h5 className="mt-2 mb-0">Housing Loan</h5>
-          <div className="d-flex gap-2">
+          <div className="d-flex flex-row justify-content-between align-items-center mt-3">
+            <h5 className="mt-2 mb-0">Housing Loan</h5>
+            <input type="checkbox" checked={housingLoanData.isAvailed} className="form-check-input mr-3" name="isAvailed" onChange={handleHousingLoanData}/>
+          </div>      
+          {housingLoanData.isAvailed ? (<><div className="d-flex gap-2">
             <div className="d-flex flex-column mt-2 f-1">
               <label>Principal Amount</label>
-              <input placeholder="150000" className="f-1" value={housingLoanData.principal} name="principal" onChange={handleHousingLoanData}/>
+              <input placeholder="150000" className="f-1" value={housingLoanData.principal} name="principal" onChange={handleHousingLoanData} />
             </div>
             <div className="d-flex flex-column mt-2 f-1">
               <label>Interest Amount</label>
-              <input placeholder="200000" className="f-1" value={housingLoanData.interest} name="interest" onChange={handleHousingLoanData}/>
+              <input placeholder="200000" className="f-1" value={housingLoanData.interest} name="interest" onChange={handleHousingLoanData} />
             </div>
-          </div>  
+          </div>
           <div className="d-flex flex-column mt-2">
             <label>Name of the lender.</label>
-            <input placeholder="John Doe" className="f-1" value={housingLoanData.lenderName} name="lenderName" onChange={handleHousingLoanData}/>
-          </div>  
-          <div className="d-flex flex-column mt-2">
+            <input placeholder="John Doe" className="f-1" value={housingLoanData.lenderName} name="lenderName" onChange={handleHousingLoanData} />
+          </div><div className="d-flex flex-column mt-2">
             <label>Address of the lender.</label>
-            <input className="f-1" value={housingLoanData.lenderAddress} name="lenderAddress" onChange={handleHousingLoanData}/>
-          </div>  
-          <div className="d-flex flex-column mt-2">
+            <input className="f-1" value={housingLoanData.lenderAddress} name="lenderAddress" onChange={handleHousingLoanData} />
+          </div><div className="d-flex flex-column mt-2">
             <label>PAN / AADHAAR number of the lender.</label>
-            <input placeholder="ABC123" className="f-1" value={housingLoanData.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleHousingLoanData}/>
-          </div>
+            <input placeholder="ABC123" className="f-1" value={housingLoanData.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleHousingLoanData} />
+          </div></>) : null}
           <hr className="mb-3"/>
           <div className="d-flex flex-row justify-content-between align-items-center mt-3">
             <h5 className="mb-0">Education Loan</h5>
@@ -294,7 +257,7 @@ const Form12bbGenerator = () => {
                 <label>PAN / AADHAAR number of the lender.</label>
                 <input placeholder="ABC123" className="f-1" value={educatonLoanData.lenderIdentityNumber} name="lenderIdentityNumber" onChange={handleEducationLoanData} />
               </div>
-            </>) : <></>}
+            </>) : null}
           
           
           <hr className="mb-3" />

@@ -1,14 +1,13 @@
 import React from "react";
-import { romanize } from "../Utils/Formatter";
 import { Font, Page, View, Text, Document } from "@react-pdf/renderer";
-import { Style } from "@react-pdf/types";
 import { styles } from "../styles";
 
 import times from "../Assets/Fonts/times.ttf";
 import timesBold from "../Assets/Fonts/times-bold.ttf";
 import timesItalic from "../Assets/Fonts/times-italic.ttf";
 import timesBoldItalic from "../Assets/Fonts/times-bold-italic.ttf";
-import { LoanData } from "../Types/Form12bb.types";
+import { Form12BBdata, LoanData, UserData } from "../Types/Form12bb.types";
+import { Column, Row, ListItem, Bold, Italic, StyledText, HorizontleRule, } from "./ReactPDF";
 
 
 Font.register({ family: "Times", src: times });
@@ -21,146 +20,11 @@ const colSpan2 = 6;
 const colSpan3 = 2;
 const colSpan4 = 3;
 
-const Column = ({
-  children,
-  style,
-  colSpan,
-  center,
-  bold,
-  italic,
-  withoutText,
-}: {
-    children?: React.ReactNode,
-    style?: Style | Style[],
-    colSpan?: number,
-    center?: boolean,
-    bold?: boolean,
-    italic?: boolean,
-    withoutText? : boolean,
-}) => {
-  let fontFamily = "Times";
-  if (bold && italic) {
-    fontFamily = "TimesBoldItalic";
-  } else if (bold) {
-    fontFamily = "TimesBold";
-  } else if (italic) {
-    fontFamily = "TimesItalic";
-  }
-
-  return (
-    <View
-      style={{
-        ...style,
-        ...styles.column,
-        display: "flex",
-        flexDirection: "row",
-        flex: colSpan ? colSpan : 1,
-        alignItems: center ? "center" : "flex-start",
-      }}
-    >
-      {withoutText ? (
-        children
-      ) : (
-        <Text
-          style={{
-            fontFamily,
-            display: "flex",
-            flex: 1,
-            alignItems: center ? "center" : "flex-start",
-            textAlign: center ? "center" : "left",
-          }}
-        >
-          {children}
-        </Text>
-      )}
-    </View>
-  );
-};
-
-const Bold = ({ children } : { children:React.ReactNode }) => {
-  return <Text style={{ fontFamily: "TimesBold" }}>{children}</Text>;
-};
-
-const Italic = ({ children } : { children:React.ReactNode }) => {
-  return <Text style={{ fontFamily: "TimesItalic" }}>{children}</Text>;
-};
-
-const Row = ({ children, style, lastRow, transparent } :
-  { children: React.ReactNode, style?: Style | Style[], lastRow?: boolean, transparent?: boolean }) => {
-  return (
-    <View
-      style={{
-        ...style,
-        borderLeft: "1px solid black",
-        display: "flex",
-        flexDirection: "row",
-        borderTop: !transparent ? "1px solid black" : "none",
-        borderBottom: lastRow ? "1px solid black" : "none",
-      }}
-    >
-      {children}
-    </View>
-  );
-};
-
-const StyledText = ({ children, style, bold, italic } : {
-    children?: React.ReactNode,
-    style?: Style | Style[],
-    bold?: boolean,
-    italic?: boolean,
-}) => {
-  let fontFamily = "Times";
-  if (bold && italic) {
-    fontFamily = "TimesBoldItalic";
-  } else if (bold) {
-    fontFamily = "TimesBold";
-  } else if (italic) {
-    fontFamily = "TimesItalic";
-  }
-  return (
-    <View style={style}>
-      <Text style={{ fontFamily }}>{children}</Text>
-    </View>
-  );
-};
-
-const ListItem = ({ children, level, type, index } : {
-    children?: React.ReactNode,
-    level?: number,
-    type?: "1" | "a" | "A" | "i" | "I",
-    index: number,
-}) => {
-  const indexType = type ? type.toString() : "1";
-  let displayIndex = "1";
-  if (indexType === "a") {
-    displayIndex = ((index || 1) + 9).toString(36).toLowerCase();
-  } else if (indexType === "A") {
-    displayIndex = ((index || 1) + 9).toString(36).toUpperCase();
-  } else if (indexType === "i") {
-    displayIndex = romanize(index).toLowerCase();
-  } else if (indexType === "I") {
-    displayIndex = romanize(index).toUpperCase();
-  }
-  return (
-    <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-      <Text
-        style={{
-          width: "100%",
-          textAlign: "right",
-          paddingRight: "3px",
-          flex: level ? level * 2 : 1,
-        }}
-      >
-        (<Text style={{ ...styles.italics }}>{displayIndex}</Text>)
-      </Text>
-      <Text style={{ maxWidth: "170px", flex: 15 }}>{children}</Text>
-    </View>
-  );
-};
-
 // Create Document Component
-const Form12BB = ({ data }:any) => {
+const Form12BB = ({ data }:{data:Form12BBdata}) => {
   console.log("Data", data);
+  const loans = data.declarations.taxDeductions.loans;
+  const user: UserData  = data.user;
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -178,7 +42,7 @@ const Form12BB = ({ data }:any) => {
               <Text style={styles.titleBullet}>1. &nbsp;</Text>
               Name and address of the employee:
               <Text style={styles.userData}>
-                {`  ${data.user.firstName} ${data.user.middleName} ${data.user.lastName}  `}
+                {`  ${user.firstName} ${user.middleName} ${user.lastName}  `}
               </Text>
             </Text>
           </View>
@@ -254,7 +118,7 @@ const Form12BB = ({ data }:any) => {
                 </ListItem>
               </Column>
               <Column colSpan={colSpan3}>
-                Rs. {data.investmentData.taxExemptions.section_80_gg.amount}
+                Rs. {data.declarations.taxExemptions.hra.amount}
               </Column>
               <Column colSpan={colSpan4}></Column>
             </Row>
@@ -267,7 +131,7 @@ const Form12BB = ({ data }:any) => {
               </Column>
               <Column colSpan={colSpan3}></Column>
               <Column colSpan={colSpan4}>
-                {data.investmentData.taxExemptions.section_80_gg.landLord.name}
+                {data.declarations.taxExemptions.hra.landLordName}
               </Column>
             </Row>
             <Row transparent>
@@ -280,8 +144,7 @@ const Form12BB = ({ data }:any) => {
               <Column colSpan={colSpan3}></Column>
               <Column colSpan={colSpan4}>
                 {
-                  data.investmentData.taxExemptions.section_80_gg.landLord
-                    .address
+                  data.declarations.taxExemptions.hra.landLordAddress
                 }
               </Column>
             </Row>
@@ -296,8 +159,7 @@ const Form12BB = ({ data }:any) => {
               <Column colSpan={colSpan3}></Column>
               <Column colSpan={colSpan4}>
                 {
-                  data.investmentData.taxExemptions.section_80_gg.landLord
-                    .identityNumber
+                  data.declarations.taxExemptions.hra.landLordIdentityNumber
                 }
               </Column>
             </Row>
@@ -327,7 +189,7 @@ const Form12BB = ({ data }:any) => {
                 Leave travel concessions or assistance
               </Column>
               <Column colSpan={colSpan3}>
-                Rs. {data.investmentData.taxExemptions.section_10_5.amount}
+                Rs. {data.declarations.taxExemptions.lta.amount}
               </Column>
               <Column colSpan={colSpan4}>Proof</Column>
             </Row>
@@ -344,10 +206,11 @@ const Form12BB = ({ data }:any) => {
               <Column colSpan={colSpan3}></Column>
               <Column colSpan={colSpan4}></Column>
             </Row>
-            {data.loans.length > 0 ? data.loans.map((item : LoanData) => <>
-              <Row transparent>
+            {loans.length > 0 ? loans.map((item : LoanData, index) => <>
+              <Row transparent key={index}>
                 <Column colSpan={colSpan1}></Column>
                 <Column colSpan={colSpan2} withoutText>
+                  <HorizontleRule />
                   <ListItem index={1} type="i">
                   Interest payable/paid to the lender
                   </ListItem>
@@ -669,7 +532,7 @@ const Form12BB = ({ data }:any) => {
               son/daughter of{" "}
               <Text
                 style={styles.userData}
-              >{`  ${data.user.parent.firstName} ${data.user.parent.middleName} ${data.user.parent.lastName}  `}</Text>
+              >{`  ${data.user.parent?.firstName} ${data.user.parent?.middleName} ${data.user.parent?.lastName}  `}</Text>
               do hereby certify that the information given above is complete and
               correct.
             </Text>

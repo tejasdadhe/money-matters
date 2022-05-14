@@ -14,7 +14,7 @@ export const data = {
       lastName: "",
     },
   },
-  investmentData: {
+  declarations: {
     taxExemptions: {
       // House rent Allowance
       section_80_gg: {
